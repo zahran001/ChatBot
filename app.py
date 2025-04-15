@@ -49,4 +49,6 @@ def chat():
 
 # Run the Flask application in development mode
 if __name__ == "__main__":
-    app.run(debug=True)  # Enable debug mode for easier troubleshooting
+    import os
+    port = int(os.environ.get("PORT", 5000))  # Get PORT from env or default to 5000
+    app.run(host="0.0.0.0", port=port)

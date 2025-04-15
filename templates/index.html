@@ -1,6 +1,6 @@
 <!-- Frontend UI -->
 <!-- templates/index.html -->
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -29,6 +29,155 @@
             document.getElementById("responseBox").innerText = data.reply;
         }
     </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Chat with GPT 🤖</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #74ebd5, #9face6);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      color: #fff;
+      margin: 20px;
+    }
+
+    #chat-box {
+      flex: 1;
+      padding: 20px;
+      background: #ffffffc7;
+      border-top-left-radius: 20px;
+      border-top-right-radius: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .message {
+      max-width: 70%;
+      margin: 10px 0;
+      padding: 12px 16px;
+      border-radius: 18px;
+      line-height: 1.4;
+      display: inline-block;
+      clear: both;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .user {
+      background-color: #007bff;
+      color: white;
+      margin-left: auto;
+      border-bottom-right-radius: 0;
+    }
+
+    .bot {
+      background-color: #e5e5ea;
+      color: black;
+      margin-right: auto;
+      border-bottom-left-radius: 0;
+    }
+
+    #input-area {
+      display: flex;
+      padding: 16px;
+      background-color: #f1f1f1;
+      border-top: 1px solid #ccc;
+    }
+
+    #prompt {
+      flex: 1;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+    }
+
+    #send-btn {
+      padding: 10px 20px;
+      margin-left: 10px;
+      font-size: 16px;
+      background-color: #28a745;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    #send-btn:hover {
+      background-color: #218838;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+  <h1>GPT Chatbot 💬</h1>
+  <div id="chat-box"></div>
+
+  <div id="input-area">
+    <input type="text" id="prompt" placeholder="Type something..." />
+    <button id="send-btn">Send</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chat-box');
+    const promptInput = document.getElementById('prompt');
+    const sendBtn = document.getElementById('send-btn');
+
+    function addMessage(text, sender) {
+      const msg = document.createElement('div');
+      msg.className = 'message ' + sender;
+      msg.innerText = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    async function sendPrompt() {
+      const prompt = promptInput.value.trim();
+      if (!prompt) return;
+
+      addMessage(prompt, 'user');
+      promptInput.value = '';
+      addMessage('Thinking... 🤔', 'bot');
+
+      const response = await fetch('/ask', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ prompt })
+      });
+
+      const data = await response.json();
+
+      // Remove the 'Thinking...' message
+      const bots = document.querySelectorAll('.bot');
+      bots[bots.length - 1].remove();
+
+      addMessage(data.reply, 'bot');
+    }
+
+    sendBtn.addEventListener('click', sendPrompt);
+    promptInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') sendPrompt();
+    });
+  </script>
 </body>
 </html>
 
